@@ -26,20 +26,22 @@ const Search = ()=>{
                  setResults(data.query.search);
              };
          
-         
-         
-             // Time out function for search 
-             const timeoutId = setTimeout(()=>{
-                if(term){
-                    search(); 
-                 }    
-             },1000);
-             return ()=>{
-                 clearTimeout(timeoutId);
-             };
-            },
-            [term]
-            );
+         // set the if condition for the default search 
+            if(term && !results.length) {
+                search();
+            } else {
+            //set the Time out function for search 
+                const timeoutId = setTimeout(()=>{
+                    if(term) {
+                        search(); 
+                     }    
+                 },1000);
+
+                 return () => {
+                     clearTimeout(timeoutId);
+                    };
+                  }
+              },[term,results.length]);
 
             // the es6 that will be assigned to a constant and will be sent to the return in the render of that function component 
 
