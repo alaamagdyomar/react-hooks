@@ -28,12 +28,15 @@ const Search = ()=>{
          
          
          
-             // Time out function 
+             // Time out function for search 
              const timeoutId = setTimeout(()=>{
                 if(term){
                     search(); 
                  }    
-             },500);
+             },1000);
+             return ()=>{
+                 clearTimeout(timeoutId);
+             };
             },
             [term]
             );
