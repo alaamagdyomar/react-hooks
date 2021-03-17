@@ -1,28 +1,49 @@
-import React from 'react';
-import Accordion from './components/Accordion';
-import Search from './components/Search';
+import React,{useState} from 'react';
+// import Accordion from './components/Accordion';
+// import Search from './components/Search';
+import Dropdown from './components/Dropdown'
 
-const items = [
+// const items = [
+//     {
+//         title:'* what is react ?',
+//         content:'React is js framework'
+//     },
+//     {
+//         title:'* why is react?',
+//         content:'have many advantages'
+//     },
+//     {
+//         title:'* from where the react hooks',
+//         content:'its a new addition to reuse the code'
+//     }
+// ]
+
+  const options = [
     {
-        title:'* what is react ?',
-        content:'React is js framework'
+        label:"The color is Red",
+        value:'red'
     },
     {
-        title:'* why is react?',
-        content:'have many advantages'
+        label:"The color is Green",
+        value:'green'
     },
     {
-        title:'* from where the react hooks',
-        content:'its a new addition to reuse the code'
+        label:"A Shade of Blue",
+        value:'blue'
     }
-]
-
+  ]; 
 const App = ()=>{
+    const [selected,setSelected]= useState(options[0]);
+
   return (
       <div>
           <br/>
       {/* <Accordion items={items}/> */}
-      <Search/>
+      {/* <Search/> */}
+      <Dropdown 
+      selected={selected}
+      onSelectedChange={setSelected}
+      options={options}/>
       </div>
       );
 }
