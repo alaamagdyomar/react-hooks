@@ -3,45 +3,81 @@ import React, { useState ,useEffect} from 'react';
 
 const Search = ()=>{
     const [term , setTerm] = useState('programming');
+
+    //set another state to fix the multi request that was sent 
+    const [debouncedTerm , setDebouncedTerm] = useState(term);
     const [results,setResults] = useState([]);
 
-        
-    
-    // Hook function 
-    useEffect(()=>{
-        // axios request      
-        const search = async () => {
-                const { data } =  await axios.get('https://en.wikipedia.org/w/api.php',
-                 {
-                     params:{
-                         action:'query',
-                         list:'search',
-                         origin:'*',
-                         format:'json',
-                         srsearch: term 
-                     }
-                 }
-                 )
-                 // update the result variable 
-                 setResults(data.query.search);
-             };
-         
-         // set the if condition for the default search 
-            if(term && !results.length) {
-                search();
-            } else {
-            //set the Time out function for search 
-                const timeoutId = setTimeout(()=>{
-                    if(term) {
-                        search(); 
-                     }    
-                 },1000);
+        // first useEfeect : that use effect solve 1-> immediatly update "term",
+                            //   2-> set timer to update "debounced term",
+                            //   3-> if user types it cancel the timeOut and update the term
 
-                 return () => {
-                     clearTimeout(timeoutId);
-                    };
-                  }
-              },[term,results.length]);
+            useEffect(()=>{
+                const timeId = setTimeout(()=>{
+                    setDebouncedTerm(term);
+                },1000);
+
+                return ()=>{
+                    clearTimeout(timeId);
+                }
+            },[term]);
+
+       // second useEffect : for the first rendered & when debounced term is changed 
+       
+            useEffect(()=>{
+    //     // axios request      
+                const search = async () => {
+                 const { data } =  await axios.get('https://en.wikipedia.org/w/api.php',
+                                  {
+                                      params:{
+                                         action:'query',
+                                         list:'search',
+                                         origin:'*',
+                                         format:'json',
+                                         srsearch: debouncedTerm 
+                                     }
+                                 });
+                                 // update the result variable 
+                                 setResults(data.query.search);
+                             };
+                             search();
+            },[debouncedTerm]);
+
+    // // Hook function 
+    // useEffect(()=>{
+    //     // axios request      
+    //     const search = async () => {
+    //             const { data } =  await axios.get('https://en.wikipedia.org/w/api.php',
+    //              {
+    //                  params:{
+    //                      action:'query',
+    //                      list:'search',
+    //                      origin:'*',
+    //                      format:'json',
+    //                      srsearch: term 
+    //                  }
+    //              }
+    //              )
+    //              // update the result variable 
+    //              setResults(data.query.search);
+    //          };
+         
+    //      // set the if condition for the default search 
+    //         if(term && !results.length) {
+    //             search();
+    //         } else {
+    //         //set the Time out function for search 
+    //             const timeoutId = setTimeout(()=>{
+    //                 if(term) {
+    //                     search(); 
+    //                  }    
+    //              },1000);
+
+    //              return () => {
+    //                  clearTimeout(timeoutId);
+    //                 };
+    //               }
+    //           },[term,results.length]);
 
             // the es6 that will be assigned to a constant and will be sent to the return in the render of that function component 
 
